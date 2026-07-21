@@ -12,4 +12,5 @@ public class User
     public DateTime Expires { get; set; }
     
     public ICollection<TodoTask> Tasks { get; set; } = new List<TodoTask>();
+    public ICollection<Category> Categories { get; set; } = new List<Category>();
 }
