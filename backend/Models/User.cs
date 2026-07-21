@@ -10,4 +10,6 @@ public class User
     
     public string? RefreshToken { get; set; }
     public DateTime Expires { get; set; }
+    
+    public ICollection<TodoTask> Tasks { get; set; } = new List<TodoTask>();
 }
