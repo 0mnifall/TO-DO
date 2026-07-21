@@ -48,9 +48,9 @@ public class TaskController(ITaskService service) : ControllerBase
     [HttpPut]
     [Authorize]
     [Route("/tasks/{id}")]
-    public async Task<IActionResult> UpdateTask(int id)
+    public async Task<IActionResult> UpdateTask(int id, TaskPutDto dto)
     {
-        if (await service.UpdateTask(id, CurrentUserId))
+        if (await service.UpdateTask(id, dto, CurrentUserId))
         {
             return Ok();
         }
