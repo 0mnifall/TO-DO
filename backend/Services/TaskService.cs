@@ -8,6 +8,12 @@ public class TaskService(ITaskRepository repository) : ITaskService
 {
     public async Task CreateTask(CreateTaskDto dto, int userId)
     {
+        Category? category = null;
+        if (dto.CategoryId != null)
+        {
+            category = await repository.GetCategory(dto.CategoryId.Value);
+        }
+        
         var task = new TodoTask
         {
             Title = dto.Title,
@@ -15,8 +21,8 @@ public class TaskService(ITaskRepository repository) : ITaskService
             DueDate = dto.DueDate,
             UserId = userId,
             User = await repository.GetUser(userId),
-            CategoryId = dto.CategoryId,
-            Category = await repository.GetCategory(dto.CategoryId)
+            CategoryId = category?.Id,
+            Category = category
         };
         
         await repository.AddTask(task);
@@ -40,12 +46,18 @@ public class TaskService(ITaskRepository repository) : ITaskService
         {
             return false;
         }
+        
+        Category? category = null;
+        if (dto.CategoryId != null)
+        {
+            category = await repository.GetCategory(dto.CategoryId.Value);
+        }
 
         task.Title = dto.Title;
         task.Description = dto.Description;
         task.DueDate = dto.DueDate;
-        task.CategoryId = dto.CategoryId;
-        task.Category = await repository.GetCategory(dto.CategoryId);
+        task.CategoryId = category?.Id;
+        task.Category = category;
 
         await repository.UpdateTask(task);
         return true;
