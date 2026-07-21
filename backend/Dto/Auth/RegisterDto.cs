@@ -6,13 +6,13 @@ public record RegisterDto
 {
     [Required]
     [StringLength(50, MinimumLength = 3)]
-    public required string Username { get; set; }
+    public required string Username { get; init; }
 
     [Required]
     [EmailAddress]
-    public required string Email { get; set; }
+    public required string Email { get; init; }
 
     [Required]
     [MinLength(8)]
-    public required string Password { get; set; }
+    public required string Password { get; init; }
 }

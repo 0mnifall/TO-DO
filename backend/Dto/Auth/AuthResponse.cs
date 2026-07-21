@@ -5,7 +5,7 @@ namespace backend.Dto.Auth;
 public record AuthResponse
 {
     [Required]
-    public required string AccessToken { get; set; }
+    public required string AccessToken { get; init; }
     [Required]
-    public required string RefreshToken { get; set; } 
+    public required string RefreshToken { get; init; } 
 }
