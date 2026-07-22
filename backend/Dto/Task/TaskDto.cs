@@ -10,6 +10,6 @@ public record TaskDto
     public DateTime CreatedAt { get; init; }
     public DateTime? DisplayedDate { get; init; }
     public TaskPriority Priority { get; init; }
-    public Category? Category { get; init; }
+    public string? Category { get; init; }
 
 }

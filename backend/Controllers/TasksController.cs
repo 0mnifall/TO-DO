@@ -7,15 +7,14 @@ using Microsoft.AspNetCore.Mvc;
 namespace backend.Controllers;
 
 [ApiController]
+[Authorize]
 [Route("api/[controller]")]
-public class TaskController(ITaskService service) : ControllerBase
+public class TasksController(ITaskService service) : ControllerBase
 {
     private int CurrentUserId =>
         int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
     
     [HttpPost]
-    [Authorize]
-    [Route("/create")]
     public async Task<IActionResult> CreateTask(CreateTaskDto task)
     {
         await service.CreateTask(task, CurrentUserId);
@@ -23,16 +22,12 @@ public class TaskController(ITaskService service) : ControllerBase
     }
 
     [HttpGet]
-    [Authorize]
-    [Route("/tasks")]
     public async Task<ActionResult<IEnumerable<TaskPreviewDto>>> GetAllTasks()
     {
         return Ok(await service.GetAllUserTasks(CurrentUserId));
     }
 
-    [HttpGet]
-    [Authorize]
-    [Route("/tasks/{id}")]
+    [HttpGet("{id}")]
     public async Task<ActionResult<TaskDto>> GetTask(int id)
     {
         var task = await service.GetTaskById(id, CurrentUserId);
@@ -45,9 +40,7 @@ public class TaskController(ITaskService service) : ControllerBase
         return Ok(task);
     }
 
-    [HttpPut]
-    [Authorize]
-    [Route("/tasks/{id}")]
+    [HttpPut("{id}")]
     public async Task<IActionResult> UpdateTask(int id, TaskPutDto dto)
     {
         if (await service.UpdateTask(id, dto, CurrentUserId))
@@ -57,9 +50,7 @@ public class TaskController(ITaskService service) : ControllerBase
         return BadRequest();
     }
 
-    [HttpDelete]
-    [Authorize]
-    [Route("/tasks/{id}")]
+    [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteTask(int id)
     {
         if (await service.DeleteTask(id, CurrentUserId))
@@ -69,9 +60,7 @@ public class TaskController(ITaskService service) : ControllerBase
         return Forbid();
     }
 
-    [HttpPost]
-    [Authorize]
-    [Route("/tasks/{id}/complete")]
+    [HttpPost("{id}/complete")]
     public async Task<IActionResult> CompleteTask(int id)
     {
         if (await service.CompleteTask(id, CurrentUserId))
@@ -81,9 +70,7 @@ public class TaskController(ITaskService service) : ControllerBase
         return Forbid();
     }
 
-    [HttpPost]
-    [Authorize]
-    [Route("/tasks/{id}/reopen")]
+    [HttpPost("{id}/reopen")]
     public async Task<IActionResult> ReopenTask(int id)
     {
         if (await service.ReopenTask(id, CurrentUserId))

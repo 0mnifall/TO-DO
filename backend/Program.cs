@@ -10,8 +10,12 @@ using Microsoft.IdentityModel.Tokens;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<ITaskRepository, TaskRepository>();
+builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<ITaskService, TaskService>();
+builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 
@@ -23,10 +27,20 @@ if (string.IsNullOrWhiteSpace(connectionString))
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(connectionString));
 
-// builder.Services.AddCors(options =>
-// {
-//     TO DO
-// });
+const string angularCorsPolicy = "AngularCorsPolicy";
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(angularCorsPolicy, policy =>
+    {
+        policy
+            .WithOrigins(
+                "http://localhost:4200",
+                "http://127.0.0.1:4200")
+            .AllowAnyHeader()
+            .AllowAnyMethod();
+    });
+});
 
 
 var jwtKey = builder.Configuration["Jwt:Key"];
@@ -105,9 +119,7 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseRouting();
 
-// TO DO
-//
-//app.UseCors("");
+app.UseCors(angularCorsPolicy);
 
 app.UseAuthentication();
 app.UseAuthorization();

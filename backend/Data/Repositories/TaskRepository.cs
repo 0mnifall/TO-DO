@@ -9,6 +9,8 @@ public class TaskRepository(AppDbContext context) : ITaskRepository
     public async Task AddTask(TodoTask task)
     {
         context.Tasks.Add(task);
+        var user = task.User;
+        user.Tasks.Add(task);
         await context.SaveChangesAsync();
     }
 
@@ -28,10 +30,11 @@ public class TaskRepository(AppDbContext context) : ITaskRepository
             .Where(t => t.UserId == userId)
             .Select(t => new TaskPreviewDto
             {
+                Id = t.Id,
                 Title = t.Title,
                 IsCompleted = t.IsCompleted,
                 Priority = t.Priority,
-                Category = t.Category,
+                Category = t.Category == null ? null : t.Category.Name,
                 DisplayedDate = t.IsCompleted ? t.CompletedAt : t.DueDate
             })
             .ToListAsync();
@@ -48,7 +51,7 @@ public class TaskRepository(AppDbContext context) : ITaskRepository
                 IsCompleted = t.IsCompleted,
                 CreatedAt = t.CreatedAt,
                 Priority = t.Priority,
-                Category = t.Category,
+                Category = t.Category == null ? null : t.Category.Name,
                 DisplayedDate = t.IsCompleted ? t.CompletedAt : t.DueDate
             })
             .FirstOrDefaultAsync();
@@ -65,9 +68,11 @@ public class TaskRepository(AppDbContext context) : ITaskRepository
         await context.SaveChangesAsync();
     }
 
-    public Task Delete(TodoTask task)
+    public async Task Delete(TodoTask task)
     {
+        var user = await context.Users.FindAsync(task.UserId);
+        user!.Tasks.Remove(task);
         context.Tasks.Remove(task);
-        return context.SaveChangesAsync();
+        await context.SaveChangesAsync();
     }
 }
