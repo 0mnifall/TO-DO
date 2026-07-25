@@ -80,6 +80,7 @@ public class AuthService(IUserRepository repository, IConfiguration configuratio
 
         return new AuthResponse
         {
+            UserName = user.Username,
             AccessToken = accessToken,
             RefreshToken = refreshToken
         };
