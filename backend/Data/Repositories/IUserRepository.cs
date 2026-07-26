@@ -11,4 +11,5 @@ public interface IUserRepository
     Task UpdateToken(string email,  string token);
     Task<AuthRequest?> FindUserByToken(string email);
     Task DeleteUser(User user);
+    Task ClearRefresh(int userId);
 }

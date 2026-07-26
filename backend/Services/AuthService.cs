@@ -5,11 +5,14 @@ using System.Text;
 using backend.Data.Repositories;
 using backend.Dto.Auth;
 using backend.Models;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.IdentityModel.Tokens;
 
 namespace backend.Services;
 
-public class AuthService(IUserRepository repository, IConfiguration configuration) : IAuthService
+public class AuthService(IUserRepository repository, IConfiguration configuration, IHttpContextAccessor accessor)
+    : IAuthService
 {
     public async Task<bool> IsExist(string email)
     {
@@ -33,16 +36,19 @@ public class AuthService(IUserRepository repository, IConfiguration configuratio
     {
         return await repository.FindUserForLogin(email);
     }
-    
-    private string GenerateJwtToken(AuthRequest user)
+
+    public Claim[] GetClaims(AuthRequest user)
     {
-        var claims = new[]
-        {
+        return
+        [
             new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
             new Claim(ClaimTypes.Email, user.Email),
             new Claim(ClaimTypes.Name, user.Username)
-        };
-        
+        ];
+    }
+
+    public string GenerateJwtToken(AuthRequest user)
+    {
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Jwt:Key"]!));
 
         var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
@@ -50,14 +56,14 @@ public class AuthService(IUserRepository repository, IConfiguration configuratio
         var token = new JwtSecurityToken(
             issuer: configuration["Jwt:Issuer"],
             audience: configuration["Jwt:Audience"],
-            claims: claims,
+            claims: GetClaims(user),
             expires: DateTime.UtcNow.AddHours(1),
             signingCredentials: creds);
 
         return new JwtSecurityTokenHandler().WriteToken(token);
     }
-    
-    private string GenerateRefreshToken()
+
+    public string GenerateRefreshToken()
     {
         var randomNumber = new byte[64];
         using var rng = RandomNumberGenerator.Create();
@@ -75,7 +81,7 @@ public class AuthService(IUserRepository repository, IConfiguration configuratio
     {
         var accessToken = GenerateJwtToken(user);
         var refreshToken = GenerateRefreshToken();
-
+        
         await repository.UpdateToken(user.Email, refreshToken);
 
         return new AuthResponse
@@ -89,6 +95,16 @@ public class AuthService(IUserRepository repository, IConfiguration configuratio
     public async Task<AuthRequest?> FindRefresh(string refreshToken)
     {
         return await repository.FindUserByToken(refreshToken);
+    }
+
+    public async Task UpdateRefreshToken(string email, string newRefreshToken)
+    {
+        await repository.UpdateToken(email, newRefreshToken);
+    }
+
+    public async Task Logout(int userId)
+    {
+        await repository.ClearRefresh(userId);
     }
 
     public async Task DeleteUser(User user)

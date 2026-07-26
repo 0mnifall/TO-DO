@@ -58,4 +58,15 @@ public class UserRepository(AppDbContext context) : IUserRepository
         context.Users.Remove(user);
         await context.SaveChangesAsync();
     }
+    
+    public async Task ClearRefresh(int userId)
+    {
+        await context.Users
+            .Where(u => u.Id == userId)
+            .ExecuteUpdateAsync(setters => setters
+                .SetProperty(u => u.RefreshToken, (string?)null)
+                .SetProperty(u => u.Expires, DateTime.MinValue));
+
+        await context.SaveChangesAsync();
+    }
 }

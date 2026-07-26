@@ -1,5 +1,9 @@
+using System.Security.Claims;
 using backend.Dto.Auth;
 using backend.Services;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace backend.Controllers;
@@ -22,7 +26,7 @@ public class AuthController(IAuthService service) : ControllerBase
     }
     
     [HttpPost("login")]
-    public async Task<ActionResult<AuthResponse>> Login(LoginDto dto)
+    public async Task<ActionResult<string>> Login(LoginDto dto)
     {
         var user = await service.FindUser(dto.Email);
 
@@ -35,20 +39,75 @@ public class AuthController(IAuthService service) : ControllerBase
         {
             return Unauthorized();
         }
-
-        return Ok(await service.Login(user));
+        
+        var authData = await service.Login(user);
+        
+        var cookieOptions = new CookieOptions
+        {
+            HttpOnly = true,
+            Secure = true,
+            SameSite = SameSiteMode.None,
+            Expires = DateTimeOffset.UtcNow.AddDays(7)
+        };
+        
+        Response.Cookies.Append("access_token", authData.AccessToken, cookieOptions);
+        Response.Cookies.Append("refresh_token", authData.RefreshToken, cookieOptions);
+        
+        return Ok(authData.UserName);
     }
     
     [HttpPost("refresh")]
-    public async Task<ActionResult<AuthResponse>> Refresh(RefreshRequest request)
+    public async Task<ActionResult> Refresh(RefreshRequest request)
     {
-        var user = await service.FindRefresh(request.RefreshToken);
+        if (!Request.Cookies.TryGetValue("refresh_token", out var refreshToken))
+        {
+            return Unauthorized();
+        }
 
+        var user = await service.FindRefresh(refreshToken);
         if (user == null)
         {
-            return Unauthorized("Invalid refresh token");
+            return Unauthorized();
         }
+
+        var newAccessToken = service.GenerateJwtToken(user);
+        var newRefreshToken =  service.GenerateRefreshToken();
         
-        return Ok(await service.Login(user));
+        await service.UpdateRefreshToken(user.Email, newRefreshToken);
+        
+        var cookieOptions = new CookieOptions
+        {
+            HttpOnly = true,
+            Secure = false,
+            SameSite = SameSiteMode.None,
+            Expires = DateTimeOffset.UtcNow.AddDays(7)
+        };
+
+        Response.Cookies.Append("access_token", newAccessToken, cookieOptions);
+        Response.Cookies.Append("refresh_token", newRefreshToken, cookieOptions);
+
+        return Ok();
+    }
+
+    [Authorize]
+    [HttpPost("logout")]
+    public async Task<IActionResult> Logout()
+    {
+        await service.Logout(int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value));
+        
+        Response.Cookies.Delete("access_token");
+        Response.Cookies.Delete("refresh_token");
+        
+        return Ok();
+    }
+    
+    [HttpGet("user")]
+    public IActionResult GetUser()
+    {
+        if (User.Identity?.IsAuthenticated == true)
+        {
+            return Ok(new { isAuthenticated = true, username = User.Identity.Name });
+        }
+        return Ok(new { isAuthenticated = false });
     }
 }
