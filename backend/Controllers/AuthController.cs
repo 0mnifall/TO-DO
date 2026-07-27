@@ -57,7 +57,7 @@ public class AuthController(IAuthService service) : ControllerBase
     }
     
     [HttpPost("refresh")]
-    public async Task<ActionResult> Refresh(RefreshRequest request)
+    public async Task<ActionResult> Refresh()
     {
         if (!Request.Cookies.TryGetValue("refresh_token", out var refreshToken))
         {
