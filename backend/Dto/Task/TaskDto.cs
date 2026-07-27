@@ -8,8 +8,9 @@ public record TaskDto
     public string? Description { get; init; }
     public bool IsCompleted  { get; init; }
     public DateTime CreatedAt { get; init; }
-    public DateTime? DisplayedDate { get; init; }
+    public DateTime? CompletedAt { get; init; }
     public TaskPriority Priority { get; init; }
-    public string? Category { get; init; }
+    public int? CategoryId { get; init; }
+    public string? CategoryName { get; init; }
 
 }

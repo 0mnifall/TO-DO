@@ -38,7 +38,7 @@ public class CategoryRepository(AppDbContext context) : ICategoryRepository
                 IsCompleted = t.IsCompleted,
                 Priority = t.Priority,
                 Category = t.Category == null ? null : t.Category.Name,
-                DisplayedDate = t.IsCompleted ? t.CompletedAt : t.DueDate
+                DisplayedDate = t.IsCompleted ? t.CompletedAt : t.CreatedAt,
             })
             .ToListAsync();
     }

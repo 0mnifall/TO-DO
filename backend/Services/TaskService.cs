@@ -18,7 +18,6 @@ public class TaskService(ITaskRepository repository) : ITaskService
         {
             Title = dto.Title,
             Description = dto.Description,
-            DueDate = dto.DueDate,
             UserId = userId,
             User = await repository.GetUser(userId),
             CategoryId = category?.Id,
@@ -55,7 +54,6 @@ public class TaskService(ITaskRepository repository) : ITaskService
 
         task.Title = dto.Title;
         task.Description = dto.Description;
-        task.DueDate = dto.DueDate;
         task.CategoryId = category?.Id;
         task.Category = category;
 

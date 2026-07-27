@@ -11,7 +11,7 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace backend.Services;
 
-public class AuthService(IUserRepository repository, IConfiguration configuration, IHttpContextAccessor accessor)
+public class AuthService(IUserRepository repository, IConfiguration configuration)
     : IAuthService
 {
     public async Task<bool> IsExist(string email)

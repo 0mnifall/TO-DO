@@ -66,7 +66,7 @@ public class TaskRepository(AppDbContext context) : ITaskRepository
                 IsCompleted = t.IsCompleted,
                 Priority = t.Priority,
                 Category = t.Category == null ? null : t.Category.Name,
-                DisplayedDate = t.IsCompleted ? t.CompletedAt : t.DueDate
+                DisplayedDate = t.IsCompleted ? t.CompletedAt : t.CreatedAt
             })
             .ToListAsync();
         
@@ -90,9 +90,10 @@ public class TaskRepository(AppDbContext context) : ITaskRepository
                 Description = t.Description,
                 IsCompleted = t.IsCompleted,
                 CreatedAt = t.CreatedAt,
+                CompletedAt =t.CompletedAt,
                 Priority = t.Priority,
-                Category = t.Category == null ? null : t.Category.Name,
-                DisplayedDate = t.IsCompleted ? t.CompletedAt : t.DueDate
+                CategoryId = t.CategoryId,
+                CategoryName = t.Category == null ? null : t.Category.Name
             })
             .FirstOrDefaultAsync();
     }
