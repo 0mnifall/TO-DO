@@ -84,8 +84,8 @@ public class TaskService(ITaskRepository repository) : ITaskService
         {
             return false;
         }
-        
-        task.Complete();
+
+        await repository.CompleteTask(task);
         return true;
     }
 
@@ -98,7 +98,7 @@ public class TaskService(ITaskRepository repository) : ITaskService
             return false;
         }
         
-        task.Reopen();
+        await repository.ReopenTask(task);
         return true;
     }
 }

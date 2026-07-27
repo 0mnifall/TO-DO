@@ -115,4 +115,16 @@ public class TaskRepository(AppDbContext context) : ITaskRepository
         context.Tasks.Remove(task);
         await context.SaveChangesAsync();
     }
+
+    public async Task CompleteTask(TodoTask task)
+    {
+        task.Complete();
+        await context.SaveChangesAsync();
+    }
+
+    public async Task ReopenTask(TodoTask task)
+    {
+        task.Reopen();
+        await context.SaveChangesAsync();
+    }
 }

@@ -13,4 +13,6 @@ public interface ITaskRepository
     Task<TodoTask?> GetTask(int id, int userId);
     Task UpdateTask(TodoTask task);
     Task Delete(TodoTask task);
+    Task CompleteTask(TodoTask task);
+    Task ReopenTask(TodoTask task);
 }
