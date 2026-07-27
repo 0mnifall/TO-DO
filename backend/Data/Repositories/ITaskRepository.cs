@@ -8,7 +8,7 @@ public interface ITaskRepository
     Task AddTask(TodoTask task);
     Task<User> GetUser(int userId);
     Task<Category?> GetCategory(int categoryId);
-    Task<IEnumerable<TaskPreviewDto>> GetAllUserTasks(int userId);
+    Task<PagedResult> GetAllUserTasks(TaskQueryDto query, int userId);
     Task<TaskDto?> GetTaskDto(int id, int userId);
     Task<TodoTask?> GetTask(int id, int userId);
     Task UpdateTask(TodoTask task);

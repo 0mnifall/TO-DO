@@ -28,9 +28,9 @@ public class TaskService(ITaskRepository repository) : ITaskService
         await repository.AddTask(task);
     }
 
-    public async Task<IEnumerable<TaskPreviewDto>> GetAllUserTasks(int userId)
+    public async Task<PagedResult> GetAllUserTasks(TaskQueryDto query, int userId)
     {
-        return await repository.GetAllUserTasks(userId);
+        return await repository.GetAllUserTasks(query, userId);
     }
 
     public async Task<TaskDto?> GetTaskById(int taskId, int userId)

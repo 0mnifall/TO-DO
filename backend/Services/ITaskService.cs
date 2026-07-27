@@ -5,7 +5,7 @@ namespace backend.Services;
 public interface ITaskService
 {
     Task CreateTask(CreateTaskDto task, int userId);
-    Task<IEnumerable<TaskPreviewDto>> GetAllUserTasks(int userId);
+    Task<PagedResult> GetAllUserTasks(TaskQueryDto query, int userId);
     Task<TaskDto?> GetTaskById(int taskId, int userId);
     Task<bool> UpdateTask(int id, TaskPutDto dto, int userId);
     Task<bool> DeleteTask(int id, int userId);

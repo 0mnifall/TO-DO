@@ -22,9 +22,9 @@ public class TasksController(ITaskService service) : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<TaskPreviewDto>>> GetAllTasks()
+    public async Task<ActionResult<PagedResult>> GetAllTasks([FromQuery] TaskQueryDto query)
     {
-        return Ok(await service.GetAllUserTasks(CurrentUserId));
+        return Ok(await service.GetAllUserTasks(query, CurrentUserId));
     }
 
     [HttpGet("{id}")]

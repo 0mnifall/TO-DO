@@ -24,10 +24,41 @@ public class TaskRepository(AppDbContext context) : ITaskRepository
         return await context.Categories.FindAsync(categoryId);
     }
 
-    public async Task<IEnumerable<TaskPreviewDto>> GetAllUserTasks(int userId)
+    public async Task<PagedResult> GetAllUserTasks(TaskQueryDto queryDto, int userId)
     {
-        return await context.Tasks
-            .Where(t => t.UserId == userId)
+        IQueryable<TodoTask> query = context.Tasks
+            .AsNoTracking()
+            .Where(task => task.UserId == userId);
+
+        if (!string.IsNullOrWhiteSpace(queryDto.Search))
+        {
+            string search = queryDto.Search.Trim().ToLower();
+
+            query = query.Where(task =>
+                task.Title.ToLower().Contains(search));
+        }
+
+        if (queryDto.IsCompleted.HasValue)
+        {
+            query = query.Where(task =>
+                task.IsCompleted == queryDto.IsCompleted.Value);
+        }
+
+        if (queryDto.CategoryId.HasValue)
+        {
+            query = query.Where(task =>
+                task.CategoryId == queryDto.CategoryId.Value);
+        }
+        
+        int totalCount = await query.CountAsync();
+
+        int totalPages = (int)Math.Ceiling(
+            totalCount / (double)queryDto.PageSize
+        );
+        
+        var items = await query.OrderByDescending(task => task.CreatedAt)
+            .Skip((queryDto.Page - 1) * queryDto.PageSize)
+            .Take(queryDto.PageSize)
             .Select(t => new TaskPreviewDto
             {
                 Id = t.Id,
@@ -38,6 +69,15 @@ public class TaskRepository(AppDbContext context) : ITaskRepository
                 DisplayedDate = t.IsCompleted ? t.CompletedAt : t.DueDate
             })
             .ToListAsync();
+        
+        return new PagedResult
+        {
+            Items = items,
+            Page = queryDto.Page,
+            PageSize = queryDto.PageSize,
+            TotalCount = totalCount,
+            TotalPages = totalPages
+        };
     }
 
     public async Task<TaskDto?> GetTaskDto(int id, int userId)
