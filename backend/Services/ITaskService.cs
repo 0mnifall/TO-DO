@@ -8,6 +8,7 @@ public interface ITaskService
     Task<PagedResult> GetAllUserTasks(TaskQueryDto query, int userId);
     Task<TaskDto?> GetTaskById(int taskId, int userId);
     Task<bool> UpdateTask(int id, TaskPutDto dto, int userId);
+    Task ClearCategoryForTask(int id);
     Task<bool> DeleteTask(int id, int userId);
     Task<bool> CompleteTask(int id, int userId);
     Task<bool> ReopenTask(int id, int userId);

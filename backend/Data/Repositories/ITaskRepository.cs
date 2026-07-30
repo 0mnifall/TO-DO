@@ -12,6 +12,7 @@ public interface ITaskRepository
     Task<TaskDto?> GetTaskDto(int id, int userId);
     Task<TodoTask?> GetTask(int id, int userId);
     Task UpdateTask(TodoTask task);
+    Task ClearCategoryForTask(int id);
     Task Delete(TodoTask task);
     Task CompleteTask(TodoTask task);
     Task ReopenTask(TodoTask task);

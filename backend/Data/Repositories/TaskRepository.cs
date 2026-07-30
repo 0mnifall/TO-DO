@@ -120,6 +120,13 @@ public class TaskRepository(AppDbContext context) : ITaskRepository
         await context.SaveChangesAsync();
     }
 
+    public async Task ClearCategoryForTask(int id)
+    {
+        await context.Tasks
+            .Where(t => t.Id == id)
+            .ExecuteUpdateAsync(s => s.SetProperty(t => t.CategoryId, (int?)null));
+    }
+
     public async Task Delete(TodoTask task)
     {
         var user = await context.Users.FindAsync(task.UserId);

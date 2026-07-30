@@ -50,6 +50,13 @@ public class TasksController(ITaskService service) : ControllerBase
         return BadRequest();
     }
 
+    [HttpPost("{id}/clearCategory")]
+    public async Task<IActionResult> ClearCategoryForTask(int id)
+    {
+        await service.ClearCategoryForTask(id);
+        return NoContent();
+    }
+
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteTask(int id)
     {

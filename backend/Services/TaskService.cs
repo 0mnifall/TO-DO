@@ -63,6 +63,11 @@ public class TaskService(ITaskRepository repository) : ITaskService
         return true;
     }
 
+    public async Task ClearCategoryForTask(int id)
+    {
+        await repository.ClearCategoryForTask(id);
+    }
+
     public async Task<bool> DeleteTask(int id, int userId)
     {
         var task = await repository.GetTask(id, userId);
