@@ -1,4 +1,5 @@
 using System.Security.Claims;
+using backend.Dto.Category;
 using backend.Dto.Task;
 using backend.Services;
 using Microsoft.AspNetCore.Authorization;
@@ -22,26 +23,26 @@ public class CategoriesController(ICategoryService service) : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<string>>> GetAllCategories()
+    public async Task<ActionResult<IEnumerable<CategoryPreviewDto>>> GetAllCategories()
     {
         return Ok(await service.GetAllUserCategories(CurrentUserId));
     }
 
     [HttpGet("{id}")]
-    public async Task<ActionResult<IEnumerable<TaskPreviewDto>>> GetAllCategoryRecipes(int id)
+    public async Task<ActionResult<CategoryDto>> GetCategoryForView(int id)
     {
-        var tasks = await service.GetAllCategoryTasks(id, CurrentUserId);
-        if (tasks == null)
+        var category = await service.GetCategoryForView(id, CurrentUserId);
+        if (category == null)
         {
             return Forbid();
         }
-        return Ok();
+        return Ok(category);
     }
 
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteCategory(int id)
     {
-        if (!(await service.DeleteCategory(id, CurrentUserId)))
+        if (!await service.DeleteCategory(id, CurrentUserId))
         {
             return Forbid();
         }

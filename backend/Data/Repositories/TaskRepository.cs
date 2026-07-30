@@ -9,8 +9,13 @@ public class TaskRepository(AppDbContext context) : ITaskRepository
     public async Task AddTask(TodoTask task)
     {
         context.Tasks.Add(task);
+
+        var category = task.Category;
+        category?.Tasks.Add(task);
+
         var user = task.User;
         user.Tasks.Add(task);
+
         await context.SaveChangesAsync();
     }
 
@@ -105,6 +110,12 @@ public class TaskRepository(AppDbContext context) : ITaskRepository
 
     public async Task UpdateTask(TodoTask task)
     {
+        var category = await context.Tasks.Where(t => t.Id == task.Id).Select(t => t.Category).FirstOrDefaultAsync();
+        category?.Tasks.Remove(task);
+        
+        category = task.Category;
+        category?.Tasks.Add(task);
+
         context.Tasks.Update(task);
         await context.SaveChangesAsync();
     }

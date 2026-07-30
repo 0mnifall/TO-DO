@@ -1,6 +1,6 @@
 namespace backend.Dto.Task;
 
-public class PagedResult
+public record PagedResult
 {
     public required IEnumerable<TaskPreviewDto> Items { get; set; }
 

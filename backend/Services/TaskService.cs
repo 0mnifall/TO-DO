@@ -16,9 +16,10 @@ public class TaskService(ITaskRepository repository) : ITaskService
         
         var task = new TodoTask
         {
+            UserId = userId,
             Title = dto.Title,
             Description = dto.Description,
-            UserId = userId,
+            Priority = dto.Priority,
             User = await repository.GetUser(userId),
             CategoryId = category?.Id,
             Category = category
@@ -54,6 +55,7 @@ public class TaskService(ITaskRepository repository) : ITaskService
 
         task.Title = dto.Title;
         task.Description = dto.Description;
+        task.Priority = dto.Priority;
         task.CategoryId = category?.Id;
         task.Category = category;
 

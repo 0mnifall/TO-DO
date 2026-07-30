@@ -1,4 +1,5 @@
 using backend.Data.Repositories;
+using backend.Dto.Category;
 using backend.Dto.Task;
 using backend.Models;
 
@@ -11,14 +12,14 @@ public class CategoryService(ICategoryRepository repository) : ICategoryService
         await repository.AddCategory(new Category { Name = name, UserId = userId });
     }
 
-    public async Task<IEnumerable<Category>> GetAllUserCategories(int userId)
+    public async Task<IEnumerable<CategoryPreviewDto>> GetAllUserCategories(int userId)
     {
         return await repository.GetAllUserCategories(userId);
     }
 
-    public async Task<IEnumerable<TaskPreviewDto>?> GetAllCategoryTasks(int id, int userId)
+    public async Task<CategoryDto?> GetCategoryForView(int id, int userId)
     {
-        return await repository.GetAllCategoryTasks(id, userId);
+        return await repository.GetCategoryForView(id, userId);
     }
 
     public async Task<bool> DeleteCategory(int id, int userId)

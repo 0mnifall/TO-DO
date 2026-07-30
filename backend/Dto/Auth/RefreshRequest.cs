@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace backend.Dto.Auth;
 
-public class RefreshRequest
+public record RefreshRequest
 {
     [Required]
     public string RefreshToken { get; init; } = string.Empty;

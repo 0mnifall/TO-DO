@@ -7,7 +7,6 @@ public class Category
     public required string Name { get; set; }
 
     public int UserId { get; set; }
-    public User User { get; set; } = null!;
 
     public ICollection<TodoTask> Tasks { get; set; } = new List<TodoTask>();
 }
