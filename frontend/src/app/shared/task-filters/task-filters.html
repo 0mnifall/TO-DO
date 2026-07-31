@@ -1,0 +1,99 @@
+<section class="card border-0 shadow-sm container py-4 mt-4">
+  <div class="card-body">
+    <div class="row g-3 align-items-end">
+
+      <div class="col-12 col-lg-4">
+        <label for="task-search" class="form-label">
+          Пошук
+        </label>
+
+        <input
+          id="task-search"
+          type="search"
+          class="form-control"
+          placeholder="Назва або опис..."
+          [ngModel]="search()"
+          (ngModelChange)="setSearch($event)"
+        />
+      </div>
+
+      <div class="col-12 col-lg-4">
+        <span class="form-label d-block">
+          Статус
+        </span>
+
+        <div
+          class="btn-group w-100"
+          role="group"
+          aria-label="Фільтр за статусом"
+        >
+          <button
+            type="button"
+            class="btn"
+            [class.btn-primary]="status() === null"
+            [class.btn-outline-primary]="status() !== null"
+            (click)="setStatus(null)"
+          >
+            Усі
+          </button>
+
+          <button
+            type="button"
+            class="btn"
+            [class.btn-primary]="status() === false"
+            [class.btn-outline-primary]="status() !== false"
+            (click)="setStatus(false)"
+          >
+            Активні
+          </button>
+
+          <button
+            type="button"
+            class="btn"
+            [class.btn-primary]="status() === true"
+            [class.btn-outline-primary]="status() !== true"
+            (click)="setStatus(true)"
+          >
+            Виконані
+          </button>
+        </div>
+      </div>
+
+      <div class="col-12 col-md-8 col-lg-3">
+        <label for="category-filter" class="form-label">
+          Категорія
+        </label>
+
+        <select
+          id="category-filter"
+          class="form-select"
+          [ngModel]="categoryId()"
+          (ngModelChange)="setCategory($event)"
+          
+        >
+          <option [ngValue]="null">
+            Усі категорії
+          </option>
+          @for (category of categories(); track category.id){
+            <option [ngValue]="category.id">
+              {{ category.name }}
+            </option>
+          }
+
+        </select>
+      </div>
+
+      <div class="col-12 col-md-4 col-lg-1">
+        <button
+          type="button"
+          class="btn btn-outline-secondary w-100"
+          title="Очистити фільтри"
+          (click)="clearFilters()"
+        >
+          ×
+        </button>
+      </div>
+
+    </div>
+  </div>
+</section>

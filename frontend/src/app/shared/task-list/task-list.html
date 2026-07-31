@@ -1,0 +1,28 @@
+<div class="container pt-4">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="mb-0">Мої завдання</h1>
+
+    <button
+      type="button"
+      class="btn btn-primary"
+      [class.disabled]="isAuthenticated() !== true"
+      (click)="addTask.emit()"
+    >
+    <span class="fw-bold me-1">+</span>
+      Додати завдання
+    </button>
+  </div>
+  @for (task of tasks(); track task.id) {
+    <app-task [task]="task" (taskSelected)="selected.emit($event)" [isSelected]="task.id == selectedId()" (statusChanged)="statusChanged.emit($event)"></app-task>
+  } @empty {
+      @if (filtered()){
+        <div class="alert alert-info">
+          Результатів пошуку немає.
+        </div>
+      } @else {
+        <div class="alert alert-info">
+          У вас поки немає завдань.
+        </div>
+      }
+    }
+</div>

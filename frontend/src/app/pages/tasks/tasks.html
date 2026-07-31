@@ -1,0 +1,20 @@
+<main class="tasks-page">
+  
+  <div>
+    <app-task-filters (filterChanged)="onFilterChanged($event)" [categories]="categories()"/>
+    <app-task-list
+    [tasks]="tasks()"
+    [selectedId]="selectedId()"
+    [filtered]="filter().search !== '' || filter().status !== null || filter().categoryId !== null"
+    [isAuthenticated]="isAuthenticated()"
+    (statusChanged)="changeStatus($event)"
+    (selected)="openSidebarForView($event)"
+    (addTask)="openSidebarForCreating()"/>
+    @if (totalCount() > 0) {
+      <div class="container text-end pe-4">
+        <div class="text-nowrap d-inline-block text-secondary fs-6 fw-medium">Всього: {{ totalCount() }}</div>
+      </div>
+      <app-pager [currentPage]="page()" [totalPages]="totalPages()" (pageChanged)="onPageChanged($event)"/>
+    }
+  </div>
+</main>

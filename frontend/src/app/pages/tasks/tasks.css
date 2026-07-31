@@ -1,0 +1,7 @@
+.counter {
+    display: inline;
+    
+    text-wrap: nowrap;
+    margin-left: 50%;
+    margin-right: 50%;
+}

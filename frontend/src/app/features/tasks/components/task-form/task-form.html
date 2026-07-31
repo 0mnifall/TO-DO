@@ -1,0 +1,168 @@
+<div class="container-fluid h-100 border-start border-2 shadow-sm bg-gray">
+    <div class="panel">
+    <div class="panel-header">
+        <h2 class="panel-title">
+        {{ selection()?.mode === 'create' ? 'Нова задача' : 'Редагування задачі' }}
+        </h2>
+
+        <button
+            type="button"
+            class="btn-close"
+            aria-label="Закрити"
+            (click)="closeSidebar()"
+        ></button>
+    </div>
+    <div class="panel-body">
+    <form
+    [formGroup]="taskForm"
+    (ngSubmit)="onSubmit()"
+  >
+    <div class="mb-3">
+      <label
+        for="title"
+        class="form-label"
+      >
+        Назва
+      </label>
+
+      <input
+        id="title"
+        type="text"
+        class="form-control"
+        formControlName="title"
+        placeholder="Введіть назву завдання"
+      />
+
+      @if (
+        taskForm.controls.title.hasError('required') &&
+        taskForm.controls.title.touched
+      ) {
+        <div class="text-danger mt-1">
+          Назва завдання обов’язкова.
+        </div>
+      }
+
+      @if (
+        taskForm.controls.title.hasError('maxlength') &&
+        taskForm.controls.title.touched
+      ) {
+        <div class="text-danger mt-1">
+          Назва надто довга.
+        </div>
+      }
+    </div>
+
+    <div class="mb-3">
+      <label
+        for="description"
+        class="form-label"
+      >
+        Опис
+      </label>
+
+      <textarea
+        id="description"
+        class="form-control"
+        formControlName="description"
+        rows="5"
+        placeholder="Введіть опис завдання"
+      ></textarea>
+
+      @if (
+        taskForm.controls.description.hasError('maxlength') &&
+        taskForm.controls.description.touched
+      ) {
+        <div class="text-danger mt-1">
+          Опис надто довгий.
+        </div>
+      }
+    </div>
+
+    <div class="mb-3">
+      <label
+        for="priority"
+        class="form-label"
+      >
+        Пріоритетність
+      </label>
+
+      <select
+        id="priority"
+        class="form-select"
+        formControlName="priority"
+      >
+        <option [ngValue]="0">Низька</option>
+        <option [ngValue]="1">Середня</option>
+        <option [ngValue]="2">Висока</option>
+      </select>
+    </div>
+
+    <div class="mb-3">
+      <label
+        for="categoryId"
+        class="form-label"
+      >
+        Категорія
+      </label>
+
+      <select
+        id="categoryId"
+        class="form-select"
+        formControlName="categoryId"
+      >
+        <option [ngValue]="null">
+          Без категорії
+        </option>
+
+        @for (category of categories(); track category.id) {
+          <option [ngValue]="category.id">
+            {{ category.name }}
+          </option>
+        }
+      </select>
+    </div>
+
+    @if (selection()?.mode === 'view') {
+      @if (task(); as selectedTask) {
+        <div class="text-secondary small mb-4">
+          <div>
+            Створено: {{ selectedTask.createdAt | date:'dd.MM.yyyy HH:mm' }}
+          </div>
+
+          @if (selectedTask.completedAt) {
+            <div>
+              Виконано: {{ selectedTask.completedAt | date:'dd.MM.yyyy HH:mm' }}
+            </div>
+          }
+        </div>
+      }
+    }
+
+    <div class="d-flex gap-2">
+      <button
+        type="submit"
+        class="btn btn-primary"
+      >
+        {{ selection()?.mode === 'create' ? 'Створити' : 'Зберегти' }}
+      </button>
+      <button
+      type="button"
+      class="btn btn-outline-secondary"
+      (click)="setUpForm()"
+      >
+      Скасувати
+    </button>
+    
+    @if (selection()?.mode === 'view') {
+      <button
+        type="button"
+        class="btn btn-danger"
+        (click)="deleteSelected()"
+      >
+        Видалити
+      </button>
+    }
+    </div>
+  </form>
+  </div>
+</div>

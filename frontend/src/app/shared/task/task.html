@@ -1,0 +1,76 @@
+<li
+  class="task-card list-group-item d-flex align-items-center gap-3 px-3 py-2 border rounded-3"
+  [class.completed]="task().isCompleted"
+  [class.selected]="isSelected()"
+  (click)="taskSelected.emit(task().id)"
+>
+  <div class="task-status">
+    <input
+      type="checkbox"
+      class="form-check-input task-checkbox m-0"
+      [id]="'task-status-' + task().id"
+      [checked]="task().isCompleted"
+      (click)="$event.stopPropagation()"
+      (change)="statusChanged.emit(task().id)"
+    />
+
+    <label
+      class="visually-hidden"
+      [for]="'task-status-' + task().id"
+    >
+      Змінити статус завдання
+    </label>
+  </div>
+
+  <div class="task-content flex-grow-1 min-width-0">
+    <div class="task-header d-flex justify-content-between align-items-center gap-3">
+      <h3 class="task-title h6 mb-0 text-truncate">
+        {{ task().title }}
+      </h3>
+
+      <span
+        class="badge task-priority flex-shrink-0"
+        [class.text-bg-success]="task().priority === 0"
+        [class.text-bg-warning]="task().priority === 1"
+        [class.text-bg-danger]="task().priority === 2"
+      >
+        @switch (task().priority) {
+          @case (2) {
+            Висока
+          }
+          @case (1) {
+            Середня
+          }
+          @case (0) {
+            Низька
+          }
+          @default {
+            Без пріоритету
+          }
+        }
+      </span>
+    </div>
+
+    <div class="task-meta d-flex justify-content-between align-items-center gap-3 mt-2">
+      @if (task().category) {
+        <span class="badge text-bg-primary task-category">
+          {{ task().category }}
+        </span>
+      } @else {
+        <span class="badge text-bg-secondary task-category">
+          Без категорії
+        </span>
+      }
+
+      <time class="task-date text-secondary small ms-auto">
+        @if (task().isCompleted) {
+          Виконано:
+        } @else {
+          Створено:
+        }
+
+        {{ task().displayedDate | date:'dd.MM.yyyy HH:mm' }}
+      </time>
+    </div>
+  </div>
+</li>
