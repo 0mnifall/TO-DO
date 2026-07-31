@@ -1,0 +1,153 @@
+<div class="container-fluid h-100 border-start border-2 shadow-sm bg-light">
+  <div class="panel">
+    <div class="panel-header">
+      <h2 class="panel-title">
+        {{
+          selection()?.mode === 'create'
+            ? 'Нова категорія'
+            : 'Перегляд категорії'
+        }}
+      </h2>
+
+      <button
+        type="button"
+        class="btn-close"
+        aria-label="Закрити"
+        (click)="closeSidebar()"
+      ></button>
+    </div>
+
+    <div class="panel-body">
+      <form
+        [formGroup]="categoryForm"
+        (ngSubmit)="onSubmit()"
+      >
+        <div class="mb-3">
+          <label
+            for="name"
+            class="form-label"
+          >
+            Назва
+          </label>
+
+          @if (selection()?.mode === 'create'){
+            <input
+            id="name"
+            type="text"
+            class="form-control"
+            formControlName="name"
+            placeholder="Введіть назву категорії"
+          />
+
+          @if (
+            categoryForm.controls.name.hasError('required') &&
+            categoryForm.controls.name.touched
+          ) {
+            <div class="text-danger mt-1">
+              Назва категорії обов’язкова.
+            </div>
+          }
+
+          @if (
+            categoryForm.controls.name.hasError('maxlength') &&
+            categoryForm.controls.name.touched
+          ) {
+            <div class="text-danger mt-1">
+              Назва категорії надто довга.
+            </div>
+          }
+          } @else {
+            <div class="fs-5 fw-semibold text-break">{{ category()?.name }}</div>
+          }
+
+          
+        </div>
+
+        @if (selection()?.mode === 'view') {
+            <div class="mb-4">
+                <h5 class="mb-3">
+                Завдання категорії
+                </h5>
+
+                @if (category()?.tasks?.length) {
+                    <div class="task-list-container mb-3">
+                        <div class="list-group">
+                            @for (task of category()!.tasks; track task.id) {
+                                <div class="list-group-item list-group-item-action">
+                                    <!-- Кнопку перенесено всередину d-flex для вирівнювання -->
+                                    <div class="d-flex justify-content-between align-items-start gap-3">
+                                        
+                                        <!-- Основний контент (текст + дата) -->
+                                        <div class="min-w-0 flex-grow-1">
+                                            <div class="fw-semibold text-break"
+                                                [class.text-decoration-line-through]="task.isCompleted"
+                                                [class.text-secondary]="task.isCompleted">
+                                                {{ task.title }}
+                                            </div>
+
+                                            <small class="text-secondary text-nowrap">
+                                                {{ task.displayedDate | date:'dd.MM.yyyy HH:mm' }}
+                                            </small>
+                                        </div>
+
+                                        @if (task.isCompleted) {
+                                          <span class="badge text-bg-secondary">Виконано</span>
+                                        }
+
+                                        <div class="d-flex flex-column align-items-end gap-2">
+                                            @switch (task.priority) {
+                                                @case (0) { <span class="badge text-bg-success">Низька</span> }
+                                                @case (1) { <span class="badge text-bg-warning">Середня</span> }
+                                                @case (2) { <span class="badge text-bg-danger">Висока</span> }
+                                            }
+                                            
+                                            <button
+                                                type="button"
+                                                class="btn-close text-danger p-0 mt-1"
+                                                aria-label="Вилучити із категорії"
+                                                (click)="deleteFrom(task.id)"></button>
+                                        </div>
+                                        
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                } @else {
+                <div class="alert alert-info mb-0">
+                    У цій категорії поки немає завдань.
+                </div>
+                }
+            </div>
+        }
+
+        <div class="d-flex gap-2">
+          @if (selection()?.mode === 'create') {
+            <button
+                type="submit"
+                class="btn btn-primary"
+            >
+                Створити
+            </button>
+            <button
+                type="button"
+                class="btn btn-outline-secondary"
+                (click)="setUpForm()"
+            >
+            Скасувати
+            </button>
+          }
+          @if (selection()?.mode === 'view') {
+            <button
+                type="button"
+                class="btn btn-danger"
+                (click)="deleteSelected()"
+            >
+                Видалити
+            </button>
+          }
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

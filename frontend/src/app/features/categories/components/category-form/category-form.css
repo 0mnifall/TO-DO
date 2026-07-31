@@ -1,0 +1,41 @@
+:host {
+  display: block;
+  height: 100%;
+}
+
+.panel {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  padding: 1rem;
+  border-bottom: 1px solid #dee2e6;
+}
+
+.panel-title {
+  margin: 0;
+  font-size: 1.5rem;
+}
+
+.panel-body {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 1rem;
+}
+
+.btn-close {
+  flex-shrink: 0;
+}
+
+.task-list-container {
+  max-height: 350px;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
