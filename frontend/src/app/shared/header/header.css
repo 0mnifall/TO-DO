@@ -1,0 +1,101 @@
+:host {
+  display: block;
+}
+
+.navbar {
+  min-height: 72px;
+}
+
+.navbar-brand {
+  color: #212529;
+  font-size: 1.25rem;
+}
+
+.navbar-brand:hover {
+  color: #212529;
+}
+
+.brand-icon {
+  display: inline-grid;
+  place-items: center;
+
+  width: 36px;
+  height: 36px;
+
+  color: white;
+  background: var(--bs-primary);
+  border-radius: 10px;
+}
+
+.nav-link {
+  position: relative;
+  color: #6c757d;
+  font-weight: 500;
+}
+
+.nav-link:hover {
+  color: #212529;
+}
+
+.nav-link.active {
+  color: var(--bs-primary);
+}
+
+.nav-link.active::after {
+  content: "";
+
+  position: absolute;
+  right: 0.5rem;
+  bottom: 0;
+  left: 0.5rem;
+
+  height: 2px;
+
+  background: var(--bs-primary);
+  border-radius: 999px;
+}
+
+.btn {
+  border-radius: 10px;
+}
+
+.username:hover {
+  background-color: initial;
+  color: #6c757d;
+}
+
+@media (max-width: 767.98px) {
+  .navbar-collapse {
+    padding-top: 1rem;
+    padding-bottom: 0.5rem;
+  }
+
+  .navbar-nav {
+    gap: 0.5rem;
+  }
+
+  .nav-item {
+    width: 100%;
+  }
+
+  .nav-link {
+    padding: 0.75rem;
+    border-radius: 8px;
+  }
+
+  .btn {
+    width: 100%;
+    margin-top: 0.25rem;
+  }
+}
+
+@media (max-width: 400px) {
+  .brand-text {
+    font-size: 1rem;
+  }
+
+  .brand-icon {
+    width: 32px;
+    height: 32px;
+  }
+}

@@ -1,0 +1,10 @@
+.form-btn-group {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.btn-link {
+  cursor: pointer;
+  align-self: flex-center;
+}

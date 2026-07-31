@@ -1,0 +1,9 @@
+<aside>
+  @if (selection(); as selection) {
+    @if (selection.type === 'task') {
+      <app-task-form [task]="selectedTask()" />
+    } @else {
+      <app-category-form [category]="selectedCategory()" />
+    }
+  }
+</aside>

@@ -1,0 +1,35 @@
+<div class="app-layout" [class.panel-open]="isSidebarOpen()">
+  <app-header
+    [userName]="userName()"
+    (login)="authForm.set('login')"
+    (logout)="logout()"
+  />
+
+  <main>
+    <router-outlet />
+  </main>
+
+  <app-sidebar-outlet />
+</div>
+@if (authForm()) {
+  <div
+    class="auth-backdrop"
+    (click)="closeAuth()"
+  ></div>
+
+  <div class="auth-modal">
+    @if (authForm() === 'login') {
+      <app-login-form
+        [message]="authMessage()"
+        (loggedIn)="formDone($event)"
+        (register)="registerClick()"
+      />
+    } @else {
+      <app-register-form
+        [message]="authMessage()"
+        (registered)="formDone($event)"
+        (login)="loginClick()"
+      />
+    }
+  </div>
+}

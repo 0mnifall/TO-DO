@@ -1,0 +1,90 @@
+.app-layout {
+    min-height: 100vh;
+    display: grid;
+    grid-template-rows: auto 1fr;
+    grid-template-columns: minmax(0, 4fr) 0;
+    overflow-x: clip;
+    transition: grid-template-columns 300ms ease;
+}
+
+.app-layout.panel-open {
+    grid-template-columns: minmax(0, 1fr) 360px;
+}
+
+app-header {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  grid-column: 1 / -1;
+  grid-row: 1;
+}
+
+main {
+  grid-column: 1;
+  grid-row: 2;
+  min-width: 0;
+}
+
+aside {
+  grid-column: 2;
+  grid-row: 2;
+
+  min-width: 0;
+  overflow: hidden;
+
+  background-color: white;
+  border-left: 1px solid #dee2e6;
+
+  opacity: 0;
+  transform: translateX(20px);
+  pointer-events: none;
+
+  transition:
+    opacity 150ms ease,
+    border-color 150ms ease;
+}
+
+.app-layout.panel-open aside {
+  opacity: 1;
+  pointer-events: auto;
+  transition-delay: 100ms;
+}
+
+.auth-modal {
+    position: fixed;
+    z-index: 1101;
+
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.auth-backdrop {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.45);
+  z-index: 1100;
+}
+
+@media (max-width: 768px) {
+  .app-layout,
+  .app-layout.panel-open {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  aside {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    z-index: 1100;
+
+    opacity: 1;
+    transform: translateX(100%);
+
+    transition: transform 250ms ease;
+  }
+
+  .app-layout.panel-open aside {
+    transform: translateX(0);
+  }
+}

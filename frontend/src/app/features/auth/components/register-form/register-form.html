@@ -1,0 +1,70 @@
+<div class="container p-5 border rounded-3 shadow-sm bg-light mx-auto" style="width: 350px;">
+  <h1 class="mb-4">Реєстрація</h1>
+
+  <form
+    [formGroup]="registerForm"
+    (ngSubmit)="onSubmit()"
+  >
+    <div class="mb-3">
+      <label for="username" class="form-label">
+        Ім'я користувача
+      </label>
+
+      <input
+        type="text"
+        id="username"
+        class="form-control"
+        formControlName="username"
+        minlength="3"
+        autocomplete="username"
+      />
+    </div>
+    <div class="mb-3">
+      <label for="email" class="form-label">
+        Електронна пошта
+      </label>
+
+      <input
+        type="email"
+        id="email"
+        class="form-control"
+        formControlName="email"
+      />
+    </div>
+
+    <div class="mb-3">
+      <label for="password" class="form-label">
+        Пароль
+      </label>
+
+      <input
+        type="password"
+        id="password"
+        class="form-control"
+        formControlName="password"
+        minlength="8"
+      />
+    </div>
+    @if (message()) {
+      <div class="text-danger small mb-3 text-wrap d-block" role="alert">
+        {{ message() }}
+      </div>
+    }
+    <div class="form-btn-group">
+      <button
+        type="submit"
+        class="btn btn-primary"
+        [disabled]="registerForm.invalid"
+      >
+        Зареєструватися
+      </button>
+      <button
+        type="button"
+        class="btn btn-link p-0"
+        (click)="login.emit()"
+      >
+        Вже маєте аккаунт? Увійти
+      </button>
+    </div>
+  </form>
+</div>
